@@ -1,4 +1,4 @@
-[![GoDev](https://img.shields.io/static/v1?label=godev&message=reference&color=00add8)](https://pkg.go.dev/github.com/augmentable-dev/jqlite)
+[![Go Reference](https://pkg.go.dev/badge/github.com/augmentable-dev/jqlite.svg)](https://pkg.go.dev/github.com/augmentable-dev/jqlite)
 [![Go Report Card](https://goreportcard.com/badge/github.com/augmentable-dev/jqlite)](https://goreportcard.com/report/github.com/augmentable-dev/jqlite)
 
 ## jqlite
