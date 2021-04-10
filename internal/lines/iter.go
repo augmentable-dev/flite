@@ -1,4 +1,4 @@
-package ndjson
+package lines
 
 import (
 	"bufio"
@@ -40,10 +40,15 @@ func newIter(filePath string) (*iter, error) {
 		f = os.Stdin
 	}
 
+	scanner := bufio.NewScanner(f)
+	// TODO make the buffer size settable
+	buf := make([]byte, 0, 1024*1024*512)
+	scanner.Buffer(buf, 0)
+
 	return &iter{
 		filePath:      absPath,
 		file:          f,
-		scanner:       bufio.NewScanner(f),
+		scanner:       scanner,
 		currentLineNo: 0,
 	}, nil
 }
@@ -65,11 +70,12 @@ func (i *iter) Next() (vtab.Row, error) {
 	i.currentLineNo++
 	keepGoing := i.scanner.Scan()
 	if !keepGoing {
+		err := i.scanner.Err()
+		if err != nil {
+			return nil, err
+		}
+
 		return nil, io.EOF
-	}
-	err := i.scanner.Err()
-	if err != nil {
-		return nil, err
 	}
 	return i, nil
 }

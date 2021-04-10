@@ -1,6 +1,6 @@
 # example of "script" usage:
 #   sqlite3 ":memory:" ".read sample_sqlite_cli"
 # will run the contents of this file in the sqlite3 CLI
-.load ndjson.so
-.mode table
-SELECT count(*) FROM ndjson LIMIT 10;
+.load lines.so
+# .mode table
+SELECT count(*) FROM lines;

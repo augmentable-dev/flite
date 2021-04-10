@@ -1,4 +1,4 @@
-package ndjson
+package lines
 
 import (
 	"errors"

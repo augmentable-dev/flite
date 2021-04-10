@@ -1,15 +1,15 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/augmentable-dev/jqlite.svg)](https://pkg.go.dev/github.com/augmentable-dev/jqlite)
-[![Go Report Card](https://goreportcard.com/badge/github.com/augmentable-dev/jqlite)](https://goreportcard.com/report/github.com/augmentable-dev/jqlite)
+[![Go Reference](https://pkg.go.dev/badge/github.com/augmentable-dev/flite.svg)](https://pkg.go.dev/github.com/augmentable-dev/flite)
+[![Go Report Card](https://goreportcard.com/badge/github.com/augmentable-dev/flite)](https://goreportcard.com/report/github.com/augmentable-dev/flite)
 
-## jqlite
+## flite
 
-`jqlite` is a SQLite extension and command line utility for working with various forms of json.
-It's meant to work in tandem with the [SQLite JSON1 extension](https://www.sqlite.org/json1.html).
+`flite` is a SQLite extension and command line utility for working with local data files.
+It's meant to work in tandem with built-in functionality such as the [SQLite JSON1 extension](https://www.sqlite.org/json1.html).
 
-### ndjson
+### lines
 
-`ndjson` is an [eponoymous-only virtual table](https://www.sqlite.org/vtab.html#eponymous_only_virtual_tables) (table-valued-function) that reads an [ndjson](https://github.com/ndjson/ndjson-spec) file from disk (or stdin if no file is specified)
+`lines` is an [eponoymous-only virtual table](https://www.sqlite.org/vtab.html#eponymous_only_virtual_tables) (table-valued-function) that reads a file from disk (or stdin if no file is specified) by line.
 
 ```sql
-SELECT * FROM ndjson("/path/to/some/file.ndjson")
+SELECT * FROM lines("/path/to/some/file.ndjson")
 ```
