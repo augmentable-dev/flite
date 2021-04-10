@@ -18,17 +18,27 @@ type iter struct {
 }
 
 func newIter(filePath string) (*iter, error) {
-	absPath, err := filepath.Abs(filePath)
-	if err != nil {
-		return nil, err
-	}
+	var (
+		err     error
+		absPath string
+		f       *os.File
+	)
 
-	f, err := os.Open(absPath)
-	if err != nil {
-		return nil, err
+	if filePath != "" {
+		absPath, err = filepath.Abs(filePath)
+		if err != nil {
+			return nil, err
+		}
+
+		f, err = os.Open(absPath)
+		if err != nil {
+			return nil, err
+		}
+		// TODO figure out a hook to close the file (f.Close())
+		// probably needs to be exposed via the vtab pkg as a way to register an "on end"
+	} else {
+		f = os.Stdin
 	}
-	// TODO figure out a hook to close the file (f.Close())
-	// probably needs to be exposed via the vtab pkg as a way to register an "on end"
 
 	return &iter{
 		filePath:      absPath,
