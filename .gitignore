@@ -1,1 +1,6 @@
+*.exe
+*.exe~
+*.dll
 *.so
+*.dylib
+.build/
