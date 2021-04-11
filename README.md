@@ -6,6 +6,17 @@
 `flite` is a SQLite extension and command line utility for working with local data files.
 It's meant to work in tandem with built-in functionality such as the [SQLite JSON1 extension](https://www.sqlite.org/json1.html).
 
+## Usage
+
+### SQLite Extension
+
+`flite` can be compiled to a shared library and be loaded as a SQLite [runtime extension](https://sqlite.org/loadext.html).
+Run `make` and the shared library will be at `./build/flite.so`.
+
+### Command Line Interface
+
+`make` will also produce a binary at `./build/flite`.
+
 ## lines
 
 `lines` is an [eponoymous-only virtual table](https://www.sqlite.org/vtab.html#eponymous_only_virtual_tables) (table-valued-function) that reads a file from disk (or stdin if no file is specified) by line.
