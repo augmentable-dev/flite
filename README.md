@@ -11,7 +11,7 @@ It's meant to work in tandem with built-in functionality such as the [SQLite JSO
 ### SQLite Extension
 
 `flite` can be compiled to a shared library and be loaded as a SQLite [runtime extension](https://sqlite.org/loadext.html).
-Run `make` and the shared library will be at `./build/flite.so`.
+Run `make` and the shared library will available be at `./build/flite.so`.
 
 ### Command Line Interface
 
