@@ -21,4 +21,22 @@ If no path is supplied, it reads from stdin.
 
 ```sql
 SELECT readfile("/path/to/file.json")
-``
+```
+
+### yaml_to_json
+
+`yaml_to_json` is a scalar function that expects a single argument (a YAML string) and returns it as a JSON string (which can be used in the built-in JSON methods)
+
+```sql
+SELECT yaml_to_json("hello: world")
+-- {"hello":"world"}
+```
+
+### json_to_yaml
+
+`json_to_yaml` is a scalar function that expects a single argument (a JSON string) and returns it as a YAML string.
+
+```sql
+SELECT json_to_yaml('{"hello":"world"}')
+-- hello: world
+```
