@@ -1,1 +1,1 @@
-internal/sqlite/*.{c,h} linguist-vendored
+internal/sqlite/* linguist-vendored
