@@ -13,3 +13,12 @@ It's meant to work in tandem with built-in functionality such as the [SQLite JSO
 ```sql
 SELECT * FROM lines("/path/to/some/file.ndjson")
 ```
+
+### readfile
+
+`readfile` is a scalar function that returns the contents of a file (path provided as an argument).
+If no path is supplied, it reads from stdin.
+
+```sql
+SELECT readfile("/path/to/file.json")
+``

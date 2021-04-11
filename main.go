@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/augmentable-dev/jqlite/internal/lines"
+	"github.com/augmentable-dev/jqlite/internal/readfile"
 	"go.riyazali.net/sqlite"
 )
 
@@ -11,6 +12,11 @@ func init() {
 			sqlite.EponymousOnly(true), sqlite.ReadOnly(true)); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
+
+		if err := api.CreateFunction("readfile", readfile.NewReadFile()); err != nil {
+			return sqlite.SQLITE_ERROR, err
+		}
+
 		return sqlite.SQLITE_OK, nil
 	})
 }
