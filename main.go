@@ -1,9 +1,12 @@
 package main
 
 import (
-	"github.com/augmentable-dev/jqlite/internal/lines"
-	"github.com/augmentable-dev/jqlite/internal/readfile"
-	"github.com/augmentable-dev/jqlite/internal/yaml"
+	"fmt"
+	"os"
+
+	"github.com/augmentable-dev/flite/internal/lines"
+	"github.com/augmentable-dev/flite/internal/readfile"
+	"github.com/augmentable-dev/flite/internal/yaml"
 	"go.riyazali.net/sqlite"
 )
 
@@ -30,4 +33,11 @@ func init() {
 	})
 }
 
-func main() {}
+func main() {
+	var query string
+	if len(os.Args) > 0 {
+		query = os.Args[0]
+	}
+
+	fmt.Println(query)
+}
