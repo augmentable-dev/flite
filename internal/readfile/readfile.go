@@ -38,6 +38,7 @@ func (m *readFile) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	ctx.ResultText(string(contents))
 }
 
+// NewReadFule returns a sqlite function for reading the contents of a file
 func NewReadFile() sqlite.Function {
 	return &readFile{}
 }

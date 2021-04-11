@@ -20,6 +20,7 @@ func (m *yamlToJSON) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	ctx.ResultText(string(asJSON))
 }
 
+// NewYAMLToJSON returns a sqlite function for converting yaml to json
 func NewYAMLToJSON() sqlite.Function {
 	return &yamlToJSON{}
 }
@@ -39,6 +40,7 @@ func (m *jsonToYaml) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	ctx.ResultText(string(asYAML))
 }
 
+// NewJSONToYAML returns a sqlite function for converting json to yaml
 func NewJSONToYAML() sqlite.Function {
 	return &jsonToYaml{}
 }
