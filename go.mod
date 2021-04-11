@@ -1,4 +1,4 @@
-module github.com/augmentable-dev/jqlite
+module github.com/augmentable-dev/flite
 
 go 1.16
 
