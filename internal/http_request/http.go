@@ -1,4 +1,4 @@
-package readHTTP
+package http_request
 
 import (
 	"io/ioutil"
@@ -8,11 +8,11 @@ import (
 	"go.riyazali.net/sqlite"
 )
 
-type readHTTP struct{}
+type http_request struct{}
 
-func (m *readHTTP) Args() int           { return -1 }
-func (m *readHTTP) Deterministic() bool { return false }
-func (m *readHTTP) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
+func (m *http_request) Args() int           { return -1 }
+func (m *http_request) Deterministic() bool { return false }
+func (m *http_request) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	var (
 		request  string
 		err      error
@@ -41,7 +41,7 @@ func (m *readHTTP) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	ctx.ResultText(string(ret))
 }
 
-// NewreadHTTP returns a sqlite function for reading the contents of a file
-func NewReadHTTP() sqlite.Function {
-	return &readHTTP{}
+// Newhttp_request returns a sqlite function for reading the contents of a file
+func NewHttp_request() sqlite.Function {
+	return &http_request{}
 }

@@ -2,7 +2,6 @@ package ext
 
 import (
 	"github.com/augmentable-dev/flite/internal/lines"
-	"github.com/augmentable-dev/flite/internal/readHTTP"
 	"github.com/augmentable-dev/flite/internal/readfile"
 	"github.com/augmentable-dev/flite/internal/yaml"
 
@@ -28,9 +27,9 @@ func init() {
 		if err := api.CreateFunction("json_to_yaml", yaml.NewJSONToYAML()); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
-		if err := api.CreateFunction("http_request", readHTTP.NewReadHTTP()); err != nil {
-			return sqlite.SQLITE_ERROR, err
-		}
+		// if err := api.CreateFunction("http_request", http_request.NewHttp_request()); err != nil {
+		// 	return sqlite.SQLITE_ERROR, err
+		// }
 
 		return sqlite.SQLITE_OK, nil
 	})
