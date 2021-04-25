@@ -31,6 +31,9 @@ func init() {
 		if err := api.CreateFunction("http_get", http.NewHTTPGet()); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
+		if err := api.CreateFunction("http_post", http.NewHTTPPost()); err != nil {
+			return sqlite.SQLITE_ERROR, err
+		}
 
 		return sqlite.SQLITE_OK, nil
 	})
