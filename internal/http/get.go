@@ -41,7 +41,7 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	ctx.ResultText(string(contents))
 }
 
-// Newhttp_get returns a sqlite function for reading the contents of a file
+// NewHTTPGet returns a sqlite function for reading the contents of a file
 func NewHTTPGet() sqlite.Function {
 	return &get{}
 }
