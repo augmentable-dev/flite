@@ -1,16 +1,27 @@
-all: clean .build/flite.so .build/flite
+.PHONY: clean vet test lint
 
-.build/flite.so: $(shell find . -type f -name '*.go' -o -name '*.c')
-	$(call log, $(CYAN), "building $@")
-	@CGO_CFLAGS="-DUSE_LIBSQLITE3" CPATH="${PWD}/internal/sqlite" \
-		go build -buildmode=c-shared -o $@ -tags="shared" shared.go
-	$(call log, $(GREEN), "built $@")
+all: clean .build/flite.so .build/flite
 
 # pass these flags to linker to suppress missing symbol errors in intermediate artifacts
 export CGO_LDFLAGS = -Wl,--unresolved-symbols=ignore-in-object-files
 ifeq ($(shell uname -s),Darwin)
 	export CGO_LDFLAGS = -Wl,-undefined,dynamic_lookup
 endif
+
+test: internal/sqlite/sqlite3.c
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags="libsqlite3,sqlite_json1" ./...
+
+vet: internal/sqlite/sqlite3.c
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" go vet -v -tags="libsqlite3,sqlite_json1" ./...
+
+lint: internal/sqlite/sqlite3.c
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" golangci-lint run --build-tags libsqlite3,sqlite_json1
+
+.build/flite.so: $(shell find . -type f -name '*.go' -o -name '*.c')
+	$(call log, $(CYAN), "building $@")
+	@CGO_CFLAGS="-DUSE_LIBSQLITE3" CPATH="${PWD}/internal/sqlite" \
+		go build -buildmode=c-shared -o $@ -tags="shared" shared.go
+	$(call log, $(GREEN), "built $@")
 
 .build/flite: $(shell find . -type f -name '*.go' -o -name '*.c')
 	$(call log, $(CYAN), "building $@")
