@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	"go.riyazali.net/sqlite"
 )
@@ -25,8 +24,11 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 
 	if len(values) > 0 {
 		request = values[0].Text()
+	} else if len(values) > 1 {
+		heads := values[1].Text()
+		headers = ParseHeaders(heads)
 	} else {
-		err := errors.New("input a single url as the argument to http get")
+		err := errors.New("input a single url as the argument to http get or a url with headers")
 		ctx.ResultError(err)
 	}
 	contents, err = httpGet(request, headers)
@@ -36,14 +38,7 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 
 	ctx.ResultText(contents)
 }
-func parseHeaders(headers string) [][]string {
-	headerList := strings.Split(headers, "|")
-	var kvHeaders [][]string
-	for _, s := range headerList {
-		kvHeaders = append(kvHeaders, strings.Split(s, ":"))
-	}
-	return kvHeaders
-}
+
 func httpGet(requestUrl string, headers [][]string) (string, error) {
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", requestUrl, nil)
