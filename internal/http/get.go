@@ -32,7 +32,7 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 		err := errors.New("input a single url as the argument to http get or a url with headers")
 		ctx.ResultError(err)
 	}
-	request, err = httpGet(url, headers)
+	request, err = HttpRequest(url, headers, "GET")
 	if err != nil {
 		ctx.ResultError(err)
 	}
@@ -46,17 +46,6 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 		ctx.ResultError(err)
 	}
 	ctx.ResultText(string(contents))
-}
-
-func httpGet(requestUrl string, headers [][]string) (*http.Request, error) {
-	request, err := http.NewRequest("GET", requestUrl, nil)
-	if err != nil {
-		return nil, err
-	}
-	for _, header := range headers {
-		request.Header.Add(header[0], header[1])
-	}
-	return request, nil
 }
 
 // NewHTTPGet returns a sqlite function for reading the contents of a file

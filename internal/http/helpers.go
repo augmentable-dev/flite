@@ -1,6 +1,9 @@
 package http
 
-import "strings"
+import (
+	"net/http"
+	"strings"
+)
 
 func ParseHeaders(headers string) [][]string {
 	headerList := strings.Split(headers, "|")
@@ -13,4 +16,14 @@ func ParseHeaders(headers string) [][]string {
 		kvHeaders = append(kvHeaders, st)
 	}
 	return kvHeaders
+}
+func HttpRequest(requestUrl string, headers [][]string, requestType string) (*http.Request, error) {
+	request, err := http.NewRequest(requestType, requestUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+	for _, header := range headers {
+		request.Header.Add(header[0], header[1])
+	}
+	return request, nil
 }
