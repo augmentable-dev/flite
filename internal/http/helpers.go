@@ -10,7 +10,7 @@ func ParseHeaders(headers string) [][]string {
 	var kvHeaders [][]string
 	for _, s := range headerList {
 		st := strings.Split(s, ":")
-		for i, _ := range st {
+		for i := range st {
 			st[i] = strings.TrimSpace(st[i])
 		}
 		kvHeaders = append(kvHeaders, st)
