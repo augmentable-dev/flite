@@ -10,7 +10,7 @@ import (
 )
 
 func TestSingleLineIter(t *testing.T) {
-	i, err := newIter("./testdata/single-row.json")
+	i, err := newIter("./testdata/single-row.json", "\n")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +52,7 @@ func TestSingleLineIter(t *testing.T) {
 
 func TestMultiLineIter(t *testing.T) {
 	filePath := "./testdata/askgit-commits.ndjson"
-	i, err := newIter(filePath)
+	i, err := newIter(filePath, "\n")
 	if err != nil {
 		t.Fatal(err)
 	}

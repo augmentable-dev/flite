@@ -2,6 +2,7 @@ package lines
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -15,9 +16,17 @@ type iter struct {
 	file          *os.File
 	scanner       *bufio.Scanner
 	currentLineNo int
+	delimiter     string
 }
 
-func newIter(filePath string) (*iter, error) {
+// taken from bufio/scan.go
+func dropCR(data []byte) []byte {
+	if len(data) > 0 && data[len(data)-1] == '\r' {
+		return data[0 : len(data)-1]
+	}
+	return data
+}
+func newIter(filePath string, delimiter string) (*iter, error) {
 	var (
 		err     error
 		absPath string
@@ -39,8 +48,21 @@ func newIter(filePath string) (*iter, error) {
 	} else {
 		f = os.Stdin
 	}
+	split := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+		if atEOF && len(data) == 0 {
+			return 0, nil, nil
+		}
+		if i := bytes.IndexAny(data, delimiter); i >= 0 {
+			return i + 1, dropCR(data[0:i]), nil
+		}
+		if atEOF {
+			return len(data), dropCR(data), nil
+		}
+		return 0, nil, nil
+	}
 
 	scanner := bufio.NewScanner(f)
+	scanner.Split(split)
 	// TODO make the buffer size settable
 	buf := make([]byte, 0, 1024*1024*512)
 	scanner.Buffer(buf, 0)
@@ -50,6 +72,7 @@ func newIter(filePath string) (*iter, error) {
 		file:          f,
 		scanner:       scanner,
 		currentLineNo: 0,
+		delimiter:     delimiter,
 	}, nil
 }
 
@@ -61,6 +84,8 @@ func (i *iter) Column(c int) (interface{}, error) {
 		return i.scanner.Text(), nil
 	case 2:
 		return i.filePath, nil
+	case 3:
+		return i.delimiter, nil
 	}
 
 	return nil, fmt.Errorf("unknown column")
