@@ -3,7 +3,7 @@ package ext
 import (
 	"github.com/augmentable-dev/flite/internal/http"
 	"github.com/augmentable-dev/flite/internal/readfile"
-	split "github.com/augmentable-dev/flite/internal/split"
+	"github.com/augmentable-dev/flite/internal/split"
 	"github.com/augmentable-dev/flite/internal/yaml"
 	_ "github.com/mattn/go-sqlite3"
 	"go.riyazali.net/sqlite"
