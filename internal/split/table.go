@@ -1,4 +1,4 @@
-package lines
+package split
 
 import (
 	"github.com/augmentable-dev/vtab"
