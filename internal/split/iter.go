@@ -2,11 +2,11 @@ package split
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/augmentable-dev/vtab"
 )
@@ -19,13 +19,6 @@ type iter struct {
 	delimiter string
 }
 
-// taken from bufio/scan.go
-func dropCR(data []byte) []byte {
-	if len(data) > 0 && data[len(data)-1] == '\r' {
-		return data[0 : len(data)-1]
-	}
-	return data
-}
 func newIter(filePath string, delimiter string) (*iter, error) {
 	var (
 		err     error
@@ -49,21 +42,32 @@ func newIter(filePath string, delimiter string) (*iter, error) {
 		f = os.Stdin
 	}
 
-	split := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-		if atEOF && len(data) == 0 {
-			return 0, nil, nil
+	// default is a line splitter
+	scanner := bufio.NewScanner(f)
+
+	// if a delimiter is provided, see here: https://stackoverflow.com/questions/33068644/how-a-scanner-can-be-implemented-with-a-custom-split/33069759
+	if delimiter != "" {
+		split := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+			// Return nothing if at end of file and no data passed
+			if atEOF && len(data) == 0 {
+				return 0, nil, nil
+			}
+
+			// Find the index of the delimiter
+			if i := strings.Index(string(data), delimiter); i >= 0 {
+				return i + 1, data[0:i], nil
+			}
+
+			// If at end of file with data return the data
+			if atEOF {
+				return len(data), data, nil
+			}
+
+			return
 		}
-		if i := bytes.IndexAny(data, delimiter); i >= 0 {
-			return i + 1, dropCR(data[0:i]), nil
-		}
-		if atEOF {
-			return len(data), dropCR(data), nil
-		}
-		return 0, nil, nil
+		scanner.Split(split)
 	}
 
-	scanner := bufio.NewScanner(f)
-	scanner.Split(split)
 	// TODO make the buffer size settable
 	buf := make([]byte, 0, 1024*1024*512)
 	scanner.Buffer(buf, 0)
