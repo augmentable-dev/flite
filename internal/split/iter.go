@@ -12,11 +12,11 @@ import (
 )
 
 type iter struct {
-	filePath      string
-	file          *os.File
-	scanner       *bufio.Scanner
-	currentLineNo int
-	delimiter     string
+	filePath  string
+	file      *os.File
+	scanner   *bufio.Scanner
+	index     int
+	delimiter string
 }
 
 // taken from bufio/scan.go
@@ -48,6 +48,7 @@ func newIter(filePath string, delimiter string) (*iter, error) {
 	} else {
 		f = os.Stdin
 	}
+
 	split := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		if atEOF && len(data) == 0 {
 			return 0, nil, nil
@@ -68,18 +69,18 @@ func newIter(filePath string, delimiter string) (*iter, error) {
 	scanner.Buffer(buf, 0)
 
 	return &iter{
-		filePath:      absPath,
-		file:          f,
-		scanner:       scanner,
-		currentLineNo: 0,
-		delimiter:     delimiter,
+		filePath:  absPath,
+		file:      f,
+		scanner:   scanner,
+		index:     -1,
+		delimiter: delimiter,
 	}, nil
 }
 
 func (i *iter) Column(c int) (interface{}, error) {
 	switch c {
 	case 0:
-		return i.currentLineNo, nil
+		return i.index, nil
 	case 1:
 		return i.scanner.Text(), nil
 	case 2:
@@ -92,7 +93,7 @@ func (i *iter) Column(c int) (interface{}, error) {
 }
 
 func (i *iter) Next() (vtab.Row, error) {
-	i.currentLineNo++
+	i.index++
 	keepGoing := i.scanner.Scan()
 	if !keepGoing {
 		err := i.scanner.Err()

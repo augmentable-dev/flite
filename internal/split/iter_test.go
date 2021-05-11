@@ -24,11 +24,11 @@ func TestSingleLineIter(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		lineNo, err := row.Column(0)
+		lineIdx, err := row.Column(0)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if lineNo != 1 {
+		if lineIdx != 0 {
 			t.Fatalf("unexpected line no")
 		}
 
@@ -63,7 +63,7 @@ func TestMultiLineIter(t *testing.T) {
 	}
 
 	expectedLines := strings.Split(string(contentBytes), "\n")
-	expectedLineNo := 1
+	expectedLineIdx := 0
 	for {
 		row, err := i.Next()
 		if err != nil {
@@ -73,21 +73,21 @@ func TestMultiLineIter(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		lineNo, err := row.Column(0)
+		lineIdx, err := row.Column(0)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if lineNo != expectedLineNo {
+		if lineIdx != expectedLineIdx {
 			t.Fatalf("unexpected line no")
 		}
-		expectedLineNo++
+		expectedLineIdx++
 
 		line, err := row.Column(1)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		expectedLine := expectedLines[lineNo.(int)-1]
+		expectedLine := expectedLines[lineIdx.(int)]
 		if line != expectedLine {
 			t.Fatalf("unexpected line contents, want: %s got: %s", expectedLine, line)
 		}
