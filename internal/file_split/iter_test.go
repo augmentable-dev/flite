@@ -1,4 +1,4 @@
-package split
+package file_split
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package split
+package file_split
 
 import (
 	"github.com/augmentable-dev/vtab"
@@ -14,7 +14,7 @@ var cols = []vtab.Column{
 
 // NewVTab returns a line reader virtual table
 func NewVTab() sqlite.Module {
-	return vtab.NewTableFunc("lines", cols, func(constraints []vtab.Constraint) (vtab.Iterator, error) {
+	return vtab.NewTableFunc("file_split", cols, func(constraints []vtab.Constraint) (vtab.Iterator, error) {
 		var filePath string
 		delimiter := "\n"
 		for _, constraint := range constraints {
