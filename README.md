@@ -19,10 +19,10 @@ Run `make` and the shared library will available be at `./build/flite.so`.
 
 ## lines
 
-`lines` is an [eponoymous-only virtual table](https://www.sqlite.org/vtab.html#eponymous_only_virtual_tables) (table-valued-function) that reads a file from disk (or stdin if no file is specified) by line.
+`split` is an [eponoymous-only virtual table](https://www.sqlite.org/vtab.html#eponymous_only_virtual_tables) (table-valued-function) that reads a file from disk (or stdin if no file is specified) and splits it into rows by a delimiter (defaults to `\n`).
 
 ```sql
-SELECT * FROM lines("/path/to/some/file.ndjson")
+SELECT * FROM split("/path/to/some/file.ndjson")
 ```
 
 ## readfile
