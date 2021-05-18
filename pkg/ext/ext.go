@@ -1,8 +1,8 @@
 package ext
 
 import (
+	"github.com/augmentable-dev/flite/internal/file_split"
 	"github.com/augmentable-dev/flite/internal/http"
-	"github.com/augmentable-dev/flite/internal/lines"
 	"github.com/augmentable-dev/flite/internal/readfile"
 	"github.com/augmentable-dev/flite/internal/yaml"
 	_ "github.com/mattn/go-sqlite3"
@@ -11,7 +11,7 @@ import (
 
 func init() {
 	sqlite.Register(func(api *sqlite.ExtensionApi) (sqlite.ErrorCode, error) {
-		if err := api.CreateModule("lines", lines.NewVTab(),
+		if err := api.CreateModule("file_split", file_split.NewVTab(),
 			sqlite.EponymousOnly(true), sqlite.ReadOnly(true)); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
