@@ -1,5 +1,6 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/augmentable-dev/flite.svg)](https://pkg.go.dev/github.com/augmentable-dev/flite)
 [![Go Report Card](https://goreportcard.com/badge/github.com/augmentable-dev/flite)](https://goreportcard.com/report/github.com/augmentable-dev/flite)
+[![codecov](https://codecov.io/gh/augmentable-dev/flite/branch/main/graph/badge.svg?token=ZLISOQV2WV)](https://codecov.io/gh/augmentable-dev/flite)
 
 # flite
 
