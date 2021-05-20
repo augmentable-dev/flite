@@ -1,4 +1,4 @@
-.PHONY: clean vet test lint
+.PHONY: clean vet test test-cover lint
 
 all: clean .build/flite.so .build/flite
 
