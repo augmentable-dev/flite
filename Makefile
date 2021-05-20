@@ -1,4 +1,4 @@
-.PHONY: clean vet test lint
+.PHONY: clean vet test test-cover lint
 
 all: clean .build/flite.so .build/flite
 
@@ -10,6 +10,10 @@ endif
 
 test: internal/sqlite/sqlite3.c
 	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags="libsqlite3,sqlite_json1" ./...
+
+test-cover:
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags=$(TAGS) ./... -cover -covermode=count -coverprofile=coverage.out
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" go tool cover -html=coverage.out
 
 vet: internal/sqlite/sqlite3.c
 	@CGO_LDFLAGS="${CGO_LDFLAGS}" go vet -v -tags="libsqlite3,sqlite_json1" ./...
