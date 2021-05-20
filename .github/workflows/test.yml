@@ -25,9 +25,6 @@ jobs:
       run: make vet
     
     - name: Test
-      run: make test
-
-    - name: Test_Cov
       run: make test-cover
     
     - name: Upload coverage
