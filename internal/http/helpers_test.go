@@ -33,16 +33,17 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return m.f(req)
 }
 func newMockRoundTripper(f func(*http.Request) (*http.Response, error)) *mockRoundTripper {
-	return &mockRoundTripper{f: f}
+	return &mockRoundTripper
 }
 func TestHTTPGet(t *testing.T) {
 	getFunc := NewHTTPGet()
 	f := getFunc.(*get)
 	url := "https://some-url.com/v1/some-endpoint.json"
 	body := "OK"
+
 	f.client.Transport = newMockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		if req.URL.String() != url {
-			t.Fatalf("expected request URL: %s, got: %s", url, req.URL.String())
+			t.Fatalf("expected request URL: %s, got: %s", url, req.Url.String())
 		}
 		return &http.Response{
 			StatusCode: 200,
@@ -54,7 +55,7 @@ func TestHTTPGet(t *testing.T) {
 		if err := api.CreateFunction("http_get", getFunc); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
-		return sqlite.SQLITE_OK, nil
+		return sqlite.SQLITE_OK, err
 	})
 	db, err := sqlx.Open("sqlite3", ":memory:")
 	if err != nil {
@@ -97,7 +98,7 @@ func TestHttpRequest(t *testing.T) {
 
 }
 func httpHandler(w http.ResponseWriter, r *http.Request) {
-
+	println(r.URL.String())
 	if r.URL.String() != "http://api.citybik.es/v2/networks" {
 		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, `{"response": "incorrect url"`)
