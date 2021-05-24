@@ -33,7 +33,7 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return m.f(req)
 }
 func newMockRoundTripper(f func(*http.Request) (*http.Response, error)) *mockRoundTripper {
-	return &mockRoundTripper
+	return &mockRoundTripper{f: f}
 }
 func TestHTTPGet(t *testing.T) {
 	getFunc := NewHTTPGet()
@@ -43,7 +43,7 @@ func TestHTTPGet(t *testing.T) {
 
 	f.client.Transport = newMockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		if req.URL.String() != url {
-			t.Fatalf("expected request URL: %s, got: %s", url, req.Url.String())
+			t.Fatalf("expected request URL: %s, got: %s", url, req.URL.String())
 		}
 		return &http.Response{
 			StatusCode: 200,
@@ -55,7 +55,7 @@ func TestHTTPGet(t *testing.T) {
 		if err := api.CreateFunction("http_get", getFunc); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
-		return sqlite.SQLITE_OK, err
+		return sqlite.SQLITE_OK, nil
 	})
 	db, err := sqlx.Open("sqlite3", ":memory:")
 	if err != nil {

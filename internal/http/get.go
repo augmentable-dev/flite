@@ -8,13 +8,15 @@ import (
 	"go.riyazali.net/sqlite"
 )
 
-type get struct{}
+type get struct {
+	client *http.Client
+}
 
 // TODO add PUT and POST stuff
 
-func (m *get) Args() int           { return -1 }
-func (m *get) Deterministic() bool { return false }
-func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
+func (f *get) Args() int           { return -1 }
+func (f *get) Deterministic() bool { return false }
+func (f *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	var (
 		url      string
 		headers  [][]string
@@ -36,8 +38,7 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	if err != nil {
 		ctx.ResultError(err)
 	}
-	client := &http.Client{}
-	response, err := client.Do(request)
+	response, err := f.client.Do(request)
 	if err != nil {
 		ctx.ResultError(err)
 	}
@@ -50,5 +51,5 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 
 // NewHTTPGet returns a sqlite function for reading the contents of a file
 func NewHTTPGet() sqlite.Function {
-	return &get{}
+	return &get{http.DefaultClient}
 }
