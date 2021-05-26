@@ -77,6 +77,52 @@ func TestHTTPGet(t *testing.T) {
 		t.Fatalf("expected response: %s, got: %s", body, res)
 	}
 }
+func TestHTTPPost(t *testing.T) {
+	postFunc := NewHTTPpost()
+	f := postFunc.(*post)
+	url := "https://some-url.com/v1/some-endpoint.json"
+	body := "OK"
+	header := "Content-Type: application/json |Accept: application/json|accept-encoding: application/gzip|x-api-key: 09187304915uqiyoewue90832174109732y6985132"
+	expected := map[string][]string{"Content-Type": {"application/json"}, "Accept": {"application/json"}, "accept-encoding": {"application/gzip"}, "x-api-key": {"09187304915uqiyoewue90832174109732y6985132"}}
+	f.client.Transport = newMockRoundTripper(func(req *http.Request) (*http.Response, error) {
+		if req.URL.String() != url {
+			t.Fatalf("expected request URL: %s, got: %s", url, req.URL.String())
+		}
+		if req.Header.Get("Content-Type") != expected["Content-Type"][0] {
+			t.Fatalf("expected Header Content-Type: %s got: %s", expected["Content-type"], req.Header.Get("Content-Type"))
+		}
+		return &http.Response{
+			StatusCode: 200,
+			Body:       ioutil.NopCloser(bytes.NewBufferString(body)),
+			Header:     expected,
+		}, nil
+	})
+	sqlite.Register(func(api *sqlite.ExtensionApi) (sqlite.ErrorCode, error) {
+		if err := api.CreateFunction("http_post", postFunc); err != nil {
+			return sqlite.SQLITE_ERROR, err
+		}
+		return sqlite.SQLITE_OK, nil
+	})
+	db, err := sqlx.Open("sqlite3", ":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT http_post($1,$2)", url, header)
+	err = row.Err()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res string
+	err = row.Scan(&res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res != body {
+		t.Fatalf("expected response: %s, got: %s", body, res)
+	}
+}
 func TestHttpRequest(t *testing.T) {
 	method := "GET"
 	url := "http://api.citybik.es/v2/networks"
