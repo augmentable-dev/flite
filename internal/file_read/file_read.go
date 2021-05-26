@@ -1,4 +1,4 @@
-package readfile
+package file_read
 
 import (
 	"io/ioutil"
