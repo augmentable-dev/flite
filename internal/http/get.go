@@ -8,28 +8,37 @@ import (
 	"go.riyazali.net/sqlite"
 )
 
-type get struct{}
+type get struct {
+	client *http.Client
+}
 
 // TODO add PUT and POST stuff
 
-func (m *get) Args() int           { return -1 }
-func (m *get) Deterministic() bool { return false }
-func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
+func (f *get) Args() int           { return -1 }
+func (f *get) Deterministic() bool { return false }
+func (f *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	var (
-		request  string
+		url      string
+		headers  [][]string
 		err      error
 		contents []byte
-		response *http.Response
+		request  *http.Request
 	)
 
 	if len(values) > 0 {
-		request = values[0].Text()
+		url = values[0].Text()
+	} else if len(values) > 1 {
+		heads := values[1].Text()
+		headers = ParseHeaders(heads)
 	} else {
-		err := errors.New("input a single url as the argument to http get")
+		err := errors.New("input a single url as the argument to http get or a url with headers")
 		ctx.ResultError(err)
 	}
-
-	response, err = http.Get(request)
+	request, err = HttpRequest(url, headers, "GET")
+	if err != nil {
+		ctx.ResultError(err)
+	}
+	response, err := f.client.Do(request)
 	if err != nil {
 		ctx.ResultError(err)
 	}
@@ -37,11 +46,10 @@ func (m *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	if err != nil {
 		ctx.ResultError(err)
 	}
-
 	ctx.ResultText(string(contents))
 }
 
 // NewHTTPGet returns a sqlite function for reading the contents of a file
 func NewHTTPGet() sqlite.Function {
-	return &get{}
+	return &get{http.DefaultClient}
 }
