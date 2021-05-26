@@ -12,7 +12,7 @@ test: internal/sqlite/sqlite3.c
 	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags="libsqlite3,sqlite_json1" ./...
 
 test-cover:
-	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags=$(TAGS) ./... -cover -covermode=count -coverprofile=coverage.out
+	@CGO_LDFLAGS="${CGO_LDFLAGS}" go test -v -tags="libsqlite3,sqlite_json1"./... -cover -covermode=count -coverprofile=coverage.out
 	@CGO_LDFLAGS="${CGO_LDFLAGS}" go tool cover -html=coverage.out
 
 vet: internal/sqlite/sqlite3.c
