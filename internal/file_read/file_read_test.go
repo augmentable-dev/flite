@@ -31,7 +31,7 @@ func TestReadFile(t *testing.T) {
 	}
 
 	sqlite.Register(func(api *sqlite.ExtensionApi) (sqlite.ErrorCode, error) {
-		if err := api.CreateFunction("readfile", readFile); err != nil {
+		if err := api.CreateFunction("file_read", readFile); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
 		return sqlite.SQLITE_OK, nil
@@ -41,7 +41,7 @@ func TestReadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	row := db.QueryRow("SELECT readfile($1)", tmpFile.Name())
+	row := db.QueryRow("SELECT file_read($1)", tmpFile.Name())
 	err = row.Err()
 	if err != nil {
 		t.Fatal(err)
