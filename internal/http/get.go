@@ -12,8 +12,6 @@ type get struct {
 	client *http.Client
 }
 
-// TODO add PUT and POST stuff
-
 func (f *get) Args() int           { return -1 }
 func (f *get) Deterministic() bool { return false }
 func (f *get) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
