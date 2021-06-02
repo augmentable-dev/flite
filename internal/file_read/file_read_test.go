@@ -41,7 +41,6 @@ func TestReadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	//println(tmpFile.Name())
 	row := db.QueryRow("SELECT readfile($1)", tmpFile.Name())
 	err = row.Err()
 	if err != nil {
