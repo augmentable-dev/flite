@@ -14,7 +14,7 @@ import (
 )
 
 func TestReadFile(t *testing.T) {
-	readFile := NewReadFile()
+	readFile := New()
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "prefix")
 	if err != nil {
 		t.Fatal(err)
