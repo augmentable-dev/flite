@@ -23,9 +23,6 @@ jobs:
 
     - name: Vet
       run: make vet
-    
-    - name: Test
-      run: make test
 
     - name: Test-Cover
       run: make test-cover
