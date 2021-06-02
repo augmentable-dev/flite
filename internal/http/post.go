@@ -12,7 +12,6 @@ type post struct {
 	client *http.Client
 }
 
-// TODO add PUT and POST stuff
 
 func (f *post) Args() int           { return -1 }
 func (f *post) Deterministic() bool { return false }
