@@ -26,12 +26,14 @@ func (m *readFile) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 		contents, err = ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			ctx.ResultError(err)
+			return
 		}
 
 	} else {
 		contents, err = os.ReadFile(filePath)
 		if err != nil {
 			ctx.ResultError(err)
+			return
 		}
 	}
 
