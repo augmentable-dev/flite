@@ -26,13 +26,13 @@ Run `make` and the shared library will available be at `./build/flite.so`.
 SELECT * FROM split("/path/to/some/file.ndjson")
 ```
 
-## readfile
+## file_read
 
-`readfile` is a scalar function that returns the contents of a file (path provided as an argument).
+`file_read` is a scalar function that returns the contents of a file (path provided as an argument).
 If no path is supplied, it reads from stdin.
 
 ```sql
-SELECT readfile("/path/to/file.json")
+SELECT file_read("/path/to/file.json")
 ```
 
 ## yaml_to_json
