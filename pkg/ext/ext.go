@@ -15,8 +15,7 @@ func init() {
 			sqlite.EponymousOnly(true), sqlite.ReadOnly(true)); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
-
-		if err := api.CreateFunction("file_read", file_read.NewReadFile()); err != nil {
+		if err := api.CreateFunction("file_read", file_read.New()); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
 

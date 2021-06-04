@@ -7,11 +7,11 @@ import (
 	"go.riyazali.net/sqlite"
 )
 
-type readFile struct{}
+type fileRead struct{}
 
-func (m *readFile) Args() int           { return -1 }
-func (m *readFile) Deterministic() bool { return false }
-func (m *readFile) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
+func (f *fileRead) Args() int           { return -1 }
+func (f *fileRead) Deterministic() bool { return false }
+func (f *fileRead) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	var (
 		filePath string
 		err      error
@@ -26,19 +26,21 @@ func (m *readFile) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 		contents, err = ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			ctx.ResultError(err)
+			return
 		}
 
 	} else {
 		contents, err = os.ReadFile(filePath)
 		if err != nil {
 			ctx.ResultError(err)
+			return
 		}
 	}
 
 	ctx.ResultText(string(contents))
 }
 
-// NewReadFile returns a sqlite function for reading the contents of a file
-func NewReadFile() sqlite.Function {
-	return &readFile{}
+// New returns a sqlite function for reading the contents of a file
+func New() sqlite.Function {
+	return &fileRead{}
 }
