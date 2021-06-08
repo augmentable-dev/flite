@@ -1,8 +1,10 @@
 package ext
 
 import (
+	"github.com/augmentable-dev/flite/internal/cmd"
 	"github.com/augmentable-dev/flite/internal/file_read"
 	"github.com/augmentable-dev/flite/internal/file_split"
+
 	"github.com/augmentable-dev/flite/internal/http"
 	"github.com/augmentable-dev/flite/internal/yaml"
 	_ "github.com/mattn/go-sqlite3"
@@ -28,6 +30,10 @@ func init() {
 		}
 
 		if err := api.CreateFunction("http_get", http.NewHTTPGet()); err != nil {
+			return sqlite.SQLITE_ERROR, err
+		}
+
+		if err := api.CreateFunction("exec", cmd.New()); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
 
