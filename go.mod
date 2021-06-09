@@ -7,6 +7,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/mattn/go-sqlite3 v1.14.6
 	go.riyazali.net/sqlite v0.0.0-20210326190148-448ec1ab2454
+	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	sigs.k8s.io/yaml v1.2.0
 )

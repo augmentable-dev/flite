@@ -3,6 +3,8 @@ package ext
 import (
 	"github.com/augmentable-dev/flite/internal/file_read"
 	"github.com/augmentable-dev/flite/internal/file_split"
+	"github.com/augmentable-dev/flite/internal/html"
+
 	"github.com/augmentable-dev/flite/internal/http"
 	"github.com/augmentable-dev/flite/internal/yaml"
 	_ "github.com/mattn/go-sqlite3"
@@ -12,6 +14,10 @@ import (
 func init() {
 	sqlite.Register(func(api *sqlite.ExtensionApi) (sqlite.ErrorCode, error) {
 		if err := api.CreateModule("file_split", file_split.NewVTab(),
+			sqlite.EponymousOnly(true), sqlite.ReadOnly(true)); err != nil {
+			return sqlite.SQLITE_ERROR, err
+		}
+		if err := api.CreateModule("html_parse", html.NewVTab(),
 			sqlite.EponymousOnly(true), sqlite.ReadOnly(true)); err != nil {
 			return sqlite.SQLITE_ERROR, err
 		}
