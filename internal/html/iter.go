@@ -2,9 +2,11 @@ package html
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/augmentable-dev/vtab"
+
 	"golang.org/x/net/html"
 )
 
@@ -14,7 +16,8 @@ type iter struct {
 	// node       *html.Node
 	// token      string
 	token_type html.TokenType
-	// raw_token  string
+	data       string
+	raw        string
 	// end        error
 }
 
@@ -23,8 +26,14 @@ func newIter(html_body string) (*iter, error) {
 	// 	tokenizer *html.Tokenizer
 	// )
 	// println("new iter")
-	r := strings.NewReader(html_body)
-	tokenizer := html.NewTokenizer(r)
+
+	x, err := http.Get(html_body)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenizer := html.NewTokenizer(x.Body)
+	token_type := tokenizer.Next()
 
 	// if html_body != "" {
 	// 	tokenizer = html.NewTokenizer(r)
@@ -33,24 +42,23 @@ func newIter(html_body string) (*iter, error) {
 	// raw_token := tokenizer.Raw()
 	return &iter{
 		html_body: html_body,
+		data:      tokenizer.Token().Data,
+		raw:       string(tokenizer.Raw()),
 		// node:      node,
-		tokenizer:  tokenizer,
-		token_type: tokenizer.Token().Type,
+		tokenizer: tokenizer,
 		// raw_token: string(raw_token),
-		// token:     token,
+		token_type: token_type,
 	}, nil
 }
 
 func (i *iter) Column(c int) (interface{}, error) {
-	println("column", c)
+	//println(c)
 	switch c {
 	case 0:
-		return strings.Trim(string(i.tokenizer.Raw()), "\n"), nil
-	case 1:
-		return strings.Trim(i.tokenizer.Token().Data, "\n"), nil
-	case 3:
-		return i.token_type.String(), nil
+		return i.raw, nil
 	case 2:
+		return i.token_type.String(), nil
+	case 1:
 		return i.html_body, nil
 	}
 
@@ -58,17 +66,19 @@ func (i *iter) Column(c int) (interface{}, error) {
 }
 
 func (i *iter) Next() (vtab.Row, error) {
-	// println("next")
-	i.token_type = i.tokenizer.Next()
-	// println(i.token_type.String())
-	// println(strings.Trim(string(i.tokenizer.Raw()), "\n"))
 
 	for strings.TrimSpace(string(i.tokenizer.Raw())) == "" && i.token_type != html.ErrorToken {
 		i.token_type = i.tokenizer.Next()
 	}
-	if i.token_type == html.ErrorToken {
+
+	//println("next")
+	if i.tokenizer.Next() == html.ErrorToken {
 		println(i.tokenizer.Err().Error())
 		return nil, i.tokenizer.Err()
 	}
+	i.token_type = i.tokenizer.Token().Type
+	i.raw = string(i.tokenizer.Raw())
+
+	//if strings.TrimSpace(string)
 	return i, nil
 }
