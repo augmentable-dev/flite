@@ -9,6 +9,7 @@ import (
 var cols = []vtab.Column{
 	{Name: "line", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
 	{Name: "content", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
+	{Name: "type", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
 	{Name: "html_body", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: true, Filters: []sqlite.ConstraintOp{sqlite.INDEX_CONSTRAINT_EQ}},
 }
 
@@ -19,7 +20,7 @@ func NewVTab() sqlite.Module {
 		for _, constraint := range constraints {
 			if constraint.Op == sqlite.INDEX_CONSTRAINT_EQ {
 				switch constraint.ColIndex {
-				case 2:
+				case 3:
 					body = constraint.Value.Text()
 				}
 			}
