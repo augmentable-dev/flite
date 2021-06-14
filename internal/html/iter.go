@@ -9,13 +9,13 @@ import (
 )
 
 type iter struct {
-	html_body  string
-	tokenizer  *html.Tokenizer
-	node       *html.Node
-	token      string
+	html_body string
+	tokenizer *html.Tokenizer
+	// node       *html.Node
+	// token      string
 	token_type html.TokenType
-	raw_token  string
-	end        error
+	// raw_token  string
+	// end        error
 }
 
 func newIter(html_body string) (*iter, error) {
@@ -34,7 +34,8 @@ func newIter(html_body string) (*iter, error) {
 	return &iter{
 		html_body: html_body,
 		// node:      node,
-		tokenizer: tokenizer,
+		tokenizer:  tokenizer,
+		token_type: tokenizer.Token().Type,
 		// raw_token: string(raw_token),
 		// token:     token,
 	}, nil
@@ -47,9 +48,9 @@ func (i *iter) Column(c int) (interface{}, error) {
 		return strings.Trim(string(i.tokenizer.Raw()), "\n"), nil
 	case 1:
 		return strings.Trim(i.tokenizer.Token().Data, "\n"), nil
-	case 2:
-		return i.token_type.String(), nil
 	case 3:
+		return i.token_type.String(), nil
+	case 2:
 		return i.html_body, nil
 	}
 
@@ -57,14 +58,11 @@ func (i *iter) Column(c int) (interface{}, error) {
 }
 
 func (i *iter) Next() (vtab.Row, error) {
-	println("next")
+	// println("next")
 	i.token_type = i.tokenizer.Next()
 	// println(i.token_type.String())
+	// println(strings.Trim(string(i.tokenizer.Raw()), "\n"))
 
-	// keepGoing := i.tokenizer.Next()
-	// i.raw_token = string(i.tokenizer.Raw())
-	// i.token = i.tokenizer.Token().Data
-	//println(i.tokenizer.Token().Type.String())
 	for strings.TrimSpace(string(i.tokenizer.Raw())) == "" && i.token_type != html.ErrorToken {
 		i.token_type = i.tokenizer.Next()
 	}
