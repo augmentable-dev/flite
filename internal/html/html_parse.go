@@ -10,6 +10,8 @@ var cols = []vtab.Column{
 	{Name: "content", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
 	{Name: "html_body", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: true, Filters: []sqlite.ConstraintOp{sqlite.INDEX_CONSTRAINT_EQ}},
 	{Name: "type", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
+	{Name: "data", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
+	{Name: "attributes", Type: sqlite.SQLITE_TEXT, NotNull: false, Hidden: false, Filters: nil},
 }
 
 // NewVTab returns a line reader virtual table
