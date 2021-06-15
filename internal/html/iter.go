@@ -2,7 +2,6 @@ package html
 
 import (
 	"fmt"
-	"math"
 	"net/http"
 	"strings"
 
@@ -17,6 +16,7 @@ type iter struct {
 	data       string
 	raw        string
 	path       []string
+	attributes string
 }
 
 func newIter(html_body string) (*iter, error) {
@@ -31,7 +31,11 @@ func newIter(html_body string) (*iter, error) {
 
 	if token_type == html.StartTagToken {
 		path = append(path, tokenizer.Token().Data)
-
+	}
+	s := []string{}
+	for k, v, n := tokenizer.TagAttr(); n; k, v, n = tokenizer.TagAttr() {
+		//fmt.Println(string(k), " : ", string(v))
+		s = append(s, fmt.Sprint(string(k), " : ", string(v)))
 	}
 	return &iter{
 		html_body:  html_body,
@@ -40,6 +44,7 @@ func newIter(html_body string) (*iter, error) {
 		path:       path,
 		tokenizer:  tokenizer,
 		token_type: token_type,
+		attributes: strings.Join(s, " , "),
 	}, nil
 }
 
@@ -54,13 +59,9 @@ func (i *iter) Column(c int) (interface{}, error) {
 	case 3:
 		return strings.Join(i.path, "/"), nil
 	case 4:
-		s := ""
-		for k, v, n := i.tokenizer.TagAttr(); n; k, v, n = i.tokenizer.TagAttr() {
-			fmt.Println(string(k), " : ", string(v))
-			s += string(k) + " : " + string(v)
-		}
-		s = strings.ReplaceAll(s[:int(math.Max(0, float64(len(s)-1)))], "\n", " ")
-		return s, nil
+
+		//print(strings.Join(s, " , "))
+		return i.attributes, nil
 	}
 
 	return nil, fmt.Errorf("unknown column")
@@ -80,6 +81,12 @@ func (i *iter) Next() (vtab.Row, error) {
 		i.data = i.token_type.String()
 
 	case html.StartTagToken, html.EndTagToken:
+		var s []string
+		for k, v, n := i.tokenizer.TagAttr(); n; k, v, n = i.tokenizer.TagAttr() {
+			//fmt.Println(string(k), " : ", string(v))
+			s = append(s, fmt.Sprint(string(k), " : ", string(v)))
+		}
+		i.attributes = strings.Join(s, " , ")
 		x := i.tokenizer.Token()
 		i.data = x.Data
 		i.raw = string(i.tokenizer.Raw())
