@@ -11,32 +11,20 @@ import (
 )
 
 type iter struct {
-	html_body string
-	tokenizer *html.Tokenizer
-	depth     int
-	// node       *html.Node
-	// token      string
+	html_body  string
+	tokenizer  *html.Tokenizer
 	token_type html.TokenType
 	data       string
 	raw        string
-	atom       string
 	path       []string
-	// end        error
 }
 
 func newIter(html_body string) (*iter, error) {
-	// var (
-	// 	tokenizer *html.Tokenizer
-	// )
-	// println("new iter")
 	var path []string
 	x, err := http.Get(html_body)
 	if err != nil {
 		return nil, err
 	}
-	//contType := x.Header.Get("Content-Type")
-	//r, err := charset.NewReader(x.Body, contType)
-
 	tokenizer := html.NewTokenizer(x.Body)
 	tokenizer.AllowCDATA(true)
 	token_type := tokenizer.Next()
@@ -45,26 +33,17 @@ func newIter(html_body string) (*iter, error) {
 		path = append(path, tokenizer.Token().Data)
 
 	}
-
-	// if html_body != "" {
-	// 	tokenizer = html.NewTokenizer(r)
-	// }
-	// token := tokenizer.Token().Data
-	// raw_token := tokenizer.Raw()
 	return &iter{
-		html_body: html_body,
-		data:      tokenizer.Token().DataAtom.String(),
-		raw:       string(tokenizer.Raw()),
-		path:      path,
-		// node:      node,
-		tokenizer: tokenizer,
-		// raw_token: string(raw_token),
+		html_body:  html_body,
+		data:       tokenizer.Token().DataAtom.String(),
+		raw:        string(tokenizer.Raw()),
+		path:       path,
+		tokenizer:  tokenizer,
 		token_type: token_type,
 	}, nil
 }
 
 func (i *iter) Column(c int) (interface{}, error) {
-	//println(c)
 	switch c {
 	case 0:
 		return i.raw, nil
@@ -88,8 +67,6 @@ func (i *iter) Column(c int) (interface{}, error) {
 }
 
 func (i *iter) Next() (vtab.Row, error) {
-
-	//println("next")
 	i.token_type = i.tokenizer.Next()
 	for strings.TrimSpace(string(i.tokenizer.Raw())) == "" && i.token_type != html.ErrorToken {
 		i.token_type = i.tokenizer.Next()
@@ -102,31 +79,16 @@ func (i *iter) Next() (vtab.Row, error) {
 	case html.TextToken:
 		i.data = i.token_type.String()
 
-	case html.StartTagToken:
+	case html.StartTagToken, html.EndTagToken:
 		x := i.tokenizer.Token()
 		i.data = x.Data
 		i.raw = string(i.tokenizer.Raw())
-		i.path = append(i.path, x.Data)
+		if i.token_type == html.StartTagToken {
+			i.path = append(i.path, x.Data)
+		} else {
+			i.path = i.path[:len(i.path)-1]
+		}
 
-		//isAnchor := t.Data == "a"
-	case html.EndTagToken:
-		x := i.tokenizer.Token()
-		i.data = x.Data
-		i.raw = string(i.tokenizer.Raw())
-		i.path = i.path[:len(i.path)-1]
 	}
-	// case html.StartTagToken, html.EndTagToken:
-	// 	tn, _ := i.tokenizer.TagName()
-	// 	if len(tn) >= 1 {
-	// 		if i.token_type == html.StartTagToken {
-	// 			i.depth++
-	// 			i.path = append(i.path, fmt.Sprint(tn))
-	// 		} else {
-	// 			i.depth--
-	// 			i.path = i.path[:len(i.path)-1]
-	// 		}
-	// 	}
-	// }
-	//if strings.TrimSpace(string)
 	return i, nil
 }
