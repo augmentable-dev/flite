@@ -23,7 +23,7 @@ func (f *exec) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 		shell = values[0].Text()
 		args = values[1].Text()
 	} else {
-		err = fmt.Errorf("must input args in format (<shell_to_execute>, <args>)")
+		err = fmt.Errorf("must input args in format ('<shell_to_execute>','<args>')")
 		ctx.ResultError(err)
 		return
 	}
