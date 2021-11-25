@@ -8,23 +8,19 @@ import (
 
 type cmdRead struct{}
 
-func (f *cmdRead) Args() int           { return -1 }
+func (f *cmdRead) Args() int           { return 1 }
 func (f *cmdRead) Deterministic() bool { return false }
 func (f *cmdRead) Apply(ctx *sqlite.Context, values ...sqlite.Value) {
 	var (
-		cmdName string
-		args    []string
+		command string
 		err     error
 	)
 
 	if len(values) > 0 {
-		cmdName = values[0].Text()
+		command = values[0].Text()
 	}
-	for i := 1; i < len(values); i++ {
-		args = append(args, values[i].Text())
-	}
-	command := exec.Command(cmdName, args...)
-	stdout, err := command.Output()
+	cmd := exec.Command("bash", "-c", command)
+	stdout, err := cmd.Output()
 
 	if err != nil {
 		ctx.ResultError(err)

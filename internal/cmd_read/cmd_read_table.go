@@ -32,7 +32,7 @@ func (i *iterCommands) Column(c int) (interface{}, error) {
 }
 func (i *iterCommands) Next() (vtab.Row, error) {
 	i.index += 1
-	if i.index >= len(i.contents)-1 {
+	if i.index >= len(i.contents) {
 		return nil, io.EOF
 	}
 
