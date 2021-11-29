@@ -52,3 +52,26 @@ SELECT yaml_to_json("hello: world")
 SELECT json_to_yaml('{"hello":"world"}')
 -- hello: world
 ```
+## cmd
+
+`cmd` is a scalar function that expects a single argument (a bash command string) and it will return the results
+
+```sql
+SELECT cmd("echo 'Hello, World'")
+-- Hello, World
+```
+
+## cmd_table
+
+`cmd_table` is a module that takes in a bash string command and an optional delimiter(default "\n") returning a row for each line
+
+| Column          | Type     |
+|-----------------|----------|
+| line_no         | INT      |
+| contents        | TEXT     |
+
+```sql
+SELECT cmd_table("echo 'Hello, World'",' ')
+-- 1 , Hello,
+-- 2 , World
+```
